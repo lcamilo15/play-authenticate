@@ -1,9 +1,10 @@
 package com.feth.play.module.pa.providers.openid;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
+import com.feth.play.module.pa.exceptions.AuthException;
+import com.feth.play.module.pa.providers.ext.ExternalAuthProvider;
+import com.feth.play.module.pa.providers.openid.exceptions.NoOpenIdAuthException;
+import com.feth.play.module.pa.providers.openid.exceptions.OpenIdConnectException;
+import com.google.inject.Inject;
 import play.Application;
 import play.Configuration;
 import play.Logger;
@@ -14,11 +15,9 @@ import play.libs.openid.UserInfo;
 import play.mvc.Http.Context;
 import play.mvc.Http.Request;
 
-import com.feth.play.module.pa.exceptions.AuthException;
-import com.feth.play.module.pa.providers.ext.ExternalAuthProvider;
-import com.feth.play.module.pa.providers.openid.exceptions.NoOpenIdAuthException;
-import com.feth.play.module.pa.providers.openid.exceptions.OpenIdConnectException;
-import com.google.inject.Inject;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class OpenIdAuthProvider extends ExternalAuthProvider {
 
@@ -76,10 +75,22 @@ public class OpenIdAuthProvider extends ExternalAuthProvider {
 			final Map<String, String> required = getAttributes(SettingKeys.ATTRIBUTES_REQUIRED);
 			final Map<String, String> optional = getAttributes(SettingKeys.ATTRIBUTES_OPTIONAL);
 
+
 			try {
 				final Promise<String> pr = OpenID.redirectURL(
 						payload.toString(), getRedirectUrl(context.request()),
 						required, optional);
+
+
+				final Promise<String> redirectUrlPromise =
+						OpenID.redirectURL("http://localhost:8080/openid-connect-server-webapp/authorize", "http://localhost:9000");
+				redirectUrlPromise.map(url -> {
+					System.out.println(url);
+					return  null;
+				}).recover(throwable -> {
+					throwable.printStackTrace();
+					return null;
+				});
 
 				return pr.get(getTimeout());
 			} catch (final Throwable t) {

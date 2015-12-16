@@ -8,9 +8,9 @@ version := "1.0-SNAPSHOT"
 
 val appDependencies = Seq(
   "be.objectify"  %% "deadbolt-java"     % "2.4.3",
-  // Comment the next line for local development of the Play Authentication core:
-  "com.feth"      %% "play-authenticate" % "0.7.2-SNAPSHOT", // use 0.7.1 on production
   "org.postgresql"    %  "postgresql"        % "9.4-1201-jdbc41",
+  "org.mitre" % "openid-connect-client" % "1.1.19",
+  "org.springframework.security.oauth" % "spring-security-oauth2" % "2.0.0.RELEASE",
   cache,
   javaWs,
   javaJdbc,
@@ -27,7 +27,7 @@ javacOptions ++= Seq("-Xlint:deprecation")
 javacOptions ++= Seq("-Xdiags:verbose")
 
 //  Uncomment the next line for local development of the Play Authenticate core:
-//lazy val playAuthenticate = project.in(file("modules/play-authenticate")).enablePlugins(PlayJava)
+lazy val playAuthenticate = project.in(file("modules/play-authenticate")).enablePlugins(PlayJava)
 
 lazy val root = project.in(file("."))
   .enablePlugins(PlayJava, PlayEbean)
@@ -35,5 +35,5 @@ lazy val root = project.in(file("."))
     libraryDependencies ++= appDependencies
   )
   /* Uncomment the next lines for local development of the Play Authenticate core: */
-  //.dependsOn(playAuthenticate)
-  //.aggregate(playAuthenticate)
+  .dependsOn(playAuthenticate)
+  .aggregate(playAuthenticate)
