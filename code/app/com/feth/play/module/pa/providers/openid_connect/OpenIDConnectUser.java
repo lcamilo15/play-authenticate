@@ -27,7 +27,7 @@ public class OpenIDConnectUser extends BasicOAuth2AuthUser {
     private boolean emailIsVerified = false;
 
     public OpenIDConnectUser(final JsonNode n, OAuth2AuthInfo info, String state) {
-        super("id", info, state);
+        super(n.get(Constants.ID).asText(), info, state);
 
         if (n.has(Constants.NAME)) {
             this.name = n.get(Constants.NAME).asText();
